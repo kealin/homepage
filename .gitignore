@@ -4,4 +4,3 @@
 /.idea/*
 /server/.env.test
 /server/.env
-!/server/.env
