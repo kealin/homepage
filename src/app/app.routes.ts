@@ -6,13 +6,24 @@ import {Routes, RouterModule} from '@angular/router';
 
 import {PortfolioComponent} from './portfolio/portfolio.component';
 import {BlogComponent} from './blog/blog.component';
-import {HomeComponent} from "./home/home.component";
+import {AboutComponent} from './about/about.component';
+import {AdminComponent} from './admin/admin.component';
+import {AuthGuard} from './guards/auth.guard';
+import {LoginComponent} from './login/login.component';
 
 export const routes: Routes = [
-    {path: '', redirectTo: 'home', pathMatch: 'full' },
-    {path: 'home', component: HomeComponent},
+    // Public routes
+    {path: '', redirectTo: 'blog', pathMatch: 'full'},
+    {path: 'about', component: AboutComponent},
     {path: 'portfolio', component: PortfolioComponent},
-    {path: 'blog', component: BlogComponent}
+    {path: 'blog', component: BlogComponent},
+    {path: 'login', component: LoginComponent},
+
+    // Admin routes
+    {path: 'admin', component: AdminComponent, canActivate: [AuthGuard]},
+
+    // Other
+    {path: '**', redirectTo: ''}
 ];
 
 export const routing: ModuleWithProviders = RouterModule.forRoot(routes);
