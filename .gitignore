@@ -1,6 +1,4 @@
-/.env
 /node_modules/*
 /dist/*
 /.idea/*
-/server/.env.test
-/server/.env
+/.env

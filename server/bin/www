@@ -4,9 +4,11 @@
  * Module dependencies.
  */
 
+
 var app = require('../server');
 var debug = require('debug')('cms:server');
 var http = require('http');
+require('dotenv').load();
 
 /**
  * Get port from environment and store in Express.

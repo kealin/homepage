@@ -12,7 +12,7 @@ export class AuthenticationService {
 
     login(username: string, password: string) {
         console.log('Logging in');
-        return this.http.post(this.config.publicApiUrl + '/' + 'auth', {
+        return this.http.post(this.config.publicApiUrl + '/' + 'auth/login', {
             username: username,
             password: password
         })
