@@ -23,9 +23,11 @@ function login(req, res) {
 function create(req, res) {
     userService.create(req.body)
         .then((user) => {
-            res.sendStatus(200);
+            if(!user._id) res.status(409).send(user);
+            else res.status(200).send(user._id);
         })
         .catch((err) => {
+            console.log(JSON.stringify(err, null, 4));
             res.status(400).send(err);
         });
 }

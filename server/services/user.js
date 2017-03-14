@@ -36,36 +36,37 @@ function login(username, password) {
 }
 
 function createUser(data) {
+    return new Promise((resolve, reject) => {
+        let user = _.omit(data, 'password');
+        user.hash = bcrypt.hashSync(data.password, 10);
 
-    let user = _.omit(data, 'password');
-    user.hash = bcrypt.hashSync(data.password, 10);
-
-    User.create(user)
-        .then((doc) => {
-           return Promise.resolve(doc._id);
-        })
-        .catch((err) => {
-            return Promise.reject(err);
-        });
-
+        User.createAsync(user)
+            .then((doc) => {
+                resolve(doc);
+            })
+            .catch((err) => {
+                reject(err);
+            });
+    });
 }
 
 function create(data) {
     return new Promise((resolve, reject) => {
 
-    User.findOne({username: data.username})
-        .then((user) => {
-            if (user) {
-                resolve('Username "' + data.username + '" is already taken');
-            } else {
-                p = createUser(data).then((user) => {
-                    resolve(user);
-                });
-            }
-        })
-        .catch((err) => {
-            reject(err);
-        });
+        User.findOneAsync({username: data.username})
+            .then((user) => {
+                if (user) {
+                    resolve('Username "' + data.username + '" is already taken');
+                } else {
+                    createUser(data)
+                        .then((user) => {
+                            resolve(user);
+                        })
+                }
+            })
+            .catch((err) => {
+                reject(err);
+            });
     })
 }
 
