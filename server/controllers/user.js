@@ -12,26 +12,20 @@ module.exports = router;
 
 function login(req, res) {
     userService.login(req.body.username, req.body.password)
-        .then(function (user) {
-            if (user) {
-                res.send(user);
-            } else {
-                res.status(401).send('Username or password is incorrect');
-            }
+        .then((user) => {
+            res.send(user);
         })
-        .catch(function (err) {
-            console.log('asd');
+        .catch((err) => {
             res.status(400).send(err);
         });
 }
 
 function create(req, res) {
     userService.create(req.body)
-        .then(function (user) {
-            if(user) res.sendStatus(200);
-            else res.status(400).send('Error creating user');
+        .then((user) => {
+            res.sendStatus(200);
         })
-        .catch(function (err) {
+        .catch((err) => {
             res.status(400).send(err);
         });
 }

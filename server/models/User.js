@@ -1,9 +1,8 @@
 /**
  * Created by Kim Lindqvist on 13-Mar-17.
  */
-const mongoose = require('mongoose');
 const Promise = require('bluebird');
-mongoose.Promise = Promise;
+const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
         username: {type: String, required: true},
@@ -16,4 +15,6 @@ const UserSchema = new mongoose.Schema({
         timestamps: true
     });
 
-module.exports = mongoose.model('User', UserSchema);
+let model = mongoose.model('User', UserSchema);
+model = Promise.promisifyAll(model);
+module.exports = model;
