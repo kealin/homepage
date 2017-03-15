@@ -16,8 +16,7 @@ app.use(express.static(path.join(__dirname, '..', 'dist')));
 app.use(expressJwt({secret: process.env.SECRET})
     .unless({
         path: [
-            '/api/user/login',
-            '/api/user'
+            '/api/user/login'
         ]
     })
 );

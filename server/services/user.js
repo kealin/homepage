@@ -12,6 +12,7 @@ service.login = login;
 service.create = create;
 service.getAll = getAll;
 service.getById = getById;
+service.update = update;
 
 module.exports = service;
 
@@ -33,11 +34,17 @@ async function login(username, password) {
 }
 
 async function getAll() {
-    return await User.findAsync({}, '-hash, -__v');
+    return await User.findAsync({}, '-hash');
 }
 
 async function getById(_id) {
-    return await User.findByIdAsync({_id: _id}, '-hash, -__v');
+    return await User.findByIdAsync({_id: _id}, '-hash');
+}
+
+async function update(_id, data) {
+    let user = _.omit(data, 'password');
+    user.hash = bcrypt.hashSync(data.password, 10);
+    return await User.findByIdAndUpdateAsync({_id}, data, {new: true});
 }
 
 function createUser(data) {

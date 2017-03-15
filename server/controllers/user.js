@@ -9,17 +9,26 @@ router.post('/login', login);
 router.post('/create', create);
 router.get('/', getAll);
 router.get('/:_id', getById);
-//router.put('/:_id', update);
+router.put('/:_id', update);
 //router.delete('/:_id', remove);
 
 module.exports = router;
 
 async function login(req, res) {
     try {
-    const user = await userService.login(req.body.username, req.body.password)
-    res.send(user);
-    } catch(e) {
-        res.status(400).send(e);
+        const user = await userService.login(req.body.username, req.body.password);
+        res.send(user);
+    } catch (e) {
+        res.status(400).send(e.message);
+    }
+}
+
+async function update(req, res) {
+    try {
+        const user = await userService.update(req._id, req.body);
+        res.send(user);
+    } catch (e) {
+        res.status(400).send(e.message);
     }
 }
 
