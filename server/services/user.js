@@ -10,6 +10,8 @@ const service = {};
 
 service.login = login;
 service.create = create;
+service.getAll = getAll;
+service.getById = getById;
 
 module.exports = service;
 
@@ -28,6 +30,14 @@ async function login(username, password) {
     else {
         throw new Error(`Invalid login attempt for ${username}`);
     }
+}
+
+async function getAll() {
+    return await User.findAsync({}, '-hash, -__v');
+}
+
+async function getById(_id) {
+    return await User.findByIdAsync({_id: _id}, '-hash, -__v');
 }
 
 function createUser(data) {
