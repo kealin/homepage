@@ -20,14 +20,12 @@ function login(req, res) {
         });
 }
 
-function create(req, res) {
-    userService.create(req.body)
-        .then((user) => {
-            if(!user._id) res.status(409).send(user);
-            else res.status(200).send(user._id);
-        })
-        .catch((err) => {
-            console.log(JSON.stringify(err, null, 4));
-            res.status(400).send(err);
-        });
+async function create(req, res) {
+    try {
+        const user = await userService.create(req.body);
+        if (!user._id) res.status(409).send(user);
+        else res.status(200).send(user._id);
+    } catch (e) {
+        res.status(400).send(e.message);
+    }
 }

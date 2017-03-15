@@ -4,7 +4,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
-const Promise = require('bluebird');
 const _ = require('lodash');
 
 const service = {};
@@ -14,60 +13,35 @@ service.create = create;
 
 module.exports = service;
 
-function login(username, password) {
-    return new Promise((resolve, reject) => {
+async function login(username, password) {
 
-        User.findOne({username: username})
-            .then((user) => {
-                if (user && bcrypt.compareSync(password, user.hash)) {
-                    resolve({
-                        _id: user._id,
-                        username: user.username,
-                        firstName: user.firstName,
-                        lastName: user.lastName,
-                        token: jwt.sign({sub: user._id}, process.env.SECRET)
-                    });
-                } else resolve();
-            })
-            .catch((err) => {
-                reject(err);
-            });
-    });
+    const user = await User.findOneAsync({username: username});
+    if (user && bcrypt.compareSync(password, user.hash)) {
+        return {
+            _id: user._id,
+            username: user.username,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            token: jwt.sign({sub: user._id}, process.env.SECRET)
+        }
+    }
+    else {
+        throw new Error(`Invalid login attempt for ${username}`);
+    }
 }
 
 function createUser(data) {
-    return new Promise((resolve, reject) => {
-        let user = _.omit(data, 'password');
-        user.hash = bcrypt.hashSync(data.password, 10);
-
-        User.createAsync(user)
-            .then((doc) => {
-                resolve(doc);
-            })
-            .catch((err) => {
-                reject(err);
-            });
-    });
+    let user = _.omit(data, 'password');
+    user.hash = bcrypt.hashSync(data.password, 10);
+    return User.createAsync(user);
 }
 
-function create(data) {
-    return new Promise((resolve, reject) => {
-
-        User.findOneAsync({username: data.username})
-            .then((user) => {
-                if (user) {
-                    resolve('Username "' + data.username + '" is already taken');
-                } else {
-                    createUser(data)
-                        .then((user) => {
-                            resolve(user);
-                        })
-                }
-            })
-            .catch((err) => {
-                reject(err);
-            });
-    })
+async function create(data) {
+    const user = await User.findOneAsync({username: data.username});
+    if (user) {
+        throw new Error(`Username ${data.username} is already taken`);
+    }
+    return createUser(data);
 }
 
 
